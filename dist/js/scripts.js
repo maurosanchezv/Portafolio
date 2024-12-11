@@ -1,80 +1,91 @@
 /*!
-* Start Bootstrap - Stylish Portfolio v6.0.6 (https://startbootstrap.com/theme/stylish-portfolio)
-* Copyright 2013-2023 Start Bootstrap
-* Licensed under MIT (https://github.com/StartBootstrap/startbootstrap-stylish-portfolio/blob/master/LICENSE)
-*/
-window.addEventListener('DOMContentLoaded', event => {
+ * Start Bootstrap - Stylish Portfolio v6.0.6 (https://startbootstrap.com/theme/stylish-portfolio)
+ * Copyright 2013-2023 Start Bootstrap
+ * Licensed under MIT (https://github.com/StartBootstrap/startbootstrap-stylish-portfolio/blob/master/LICENSE)
+ */
 
-    const sidebarWrapper = document.getElementById('sidebar-wrapper');
+document.addEventListener("DOMContentLoaded", () => {
+    const sidebarWrapper = document.getElementById("sidebar-wrapper");
+    const menuToggle = document.querySelector(".menu-toggle");
+    const scrollTriggers = document.querySelectorAll(
+        "#sidebar-wrapper .js-scroll-trigger"
+    );
+    const scrollToTop = document.querySelector(".scroll-to-top");
     let scrollToTopVisible = false;
-    // Closes the sidebar menu
-    const menuToggle = document.body.querySelector('.menu-toggle');
-    menuToggle.addEventListener('click', event => {
-        event.preventDefault();
-        sidebarWrapper.classList.toggle('active');
-        _toggleMenuIcon();
-        menuToggle.classList.toggle('active');
-    })
 
-    // Closes responsive menu when a scroll trigger link is clicked
-    var scrollTriggerList = [].slice.call(document.querySelectorAll('#sidebar-wrapper .js-scroll-trigger'));
-    scrollTriggerList.map(scrollTrigger => {
-        scrollTrigger.addEventListener('click', () => {
-            sidebarWrapper.classList.remove('active');
-            menuToggle.classList.remove('active');
-            _toggleMenuIcon();
-        })
+    // Toggle sidebar menu
+    menuToggle.addEventListener("click", (event) => {
+        event.preventDefault();
+        toggleSidebar();
     });
 
-    function _toggleMenuIcon() {
-        const menuToggleBars = document.body.querySelector('.menu-toggle > .fa-bars');
-        const menuToggleTimes = document.body.querySelector('.menu-toggle > .fa-xmark');
-        if (menuToggleBars) {
-            menuToggleBars.classList.remove('fa-bars');
-            menuToggleBars.classList.add('fa-xmark');
+    // Close sidebar menu on scroll trigger click
+    scrollTriggers.forEach((trigger) => {
+        trigger.addEventListener("click", closeSidebar);
+    });
+
+    // Toggle the menu icon
+    function toggleMenuIcon() {
+        const menuBars = menuToggle.querySelector(".fa-bars");
+        const menuTimes = menuToggle.querySelector(".fa-xmark");
+
+        if (menuBars) {
+            menuBars.classList.replace("fa-bars", "fa-xmark");
         }
-        if (menuToggleTimes) {
-            menuToggleTimes.classList.remove('fa-xmark');
-            menuToggleTimes.classList.add('fa-bars');
+        if (menuTimes) {
+            menuTimes.classList.replace("fa-xmark", "fa-bars");
         }
     }
 
-    // Scroll to top button appear
-    document.addEventListener('scroll', () => {
-        const scrollToTop = document.body.querySelector('.scroll-to-top');
-        if (document.documentElement.scrollTop > 100) {
-            if (!scrollToTopVisible) {
-                fadeIn(scrollToTop);
-                scrollToTopVisible = true;
-            }
-        } else {
-            if (scrollToTopVisible) {
-                fadeOut(scrollToTop);
-                scrollToTopVisible = false;
-            }
-        }
-    })
-})
+    // Toggle sidebar visibility
+    function toggleSidebar() {
+        sidebarWrapper.classList.toggle("active");
+        menuToggle.classList.toggle("active");
+        toggleMenuIcon();
+    }
 
-function fadeOut(el) {
-    el.style.opacity = 1;
-    (function fade() {
-        if ((el.style.opacity -= .1) < 0) {
-            el.style.display = "none";
-        } else {
-            requestAnimationFrame(fade);
-        }
-    })();
-};
+    // Close sidebar
+    function closeSidebar() {
+        sidebarWrapper.classList.remove("active");
+        menuToggle.classList.remove("active");
+        toggleMenuIcon();
+    }
 
-function fadeIn(el, display) {
-    el.style.opacity = 0;
-    el.style.display = display || "block";
-    (function fade() {
-        var val = parseFloat(el.style.opacity);
-        if (!((val += .1) > 1)) {
-            el.style.opacity = val;
-            requestAnimationFrame(fade);
+    // Show/hide scroll-to-top button
+    document.addEventListener("scroll", () => {
+        const scrollTop =
+            document.documentElement.scrollTop || document.body.scrollTop;
+        if (scrollTop > 100 && !scrollToTopVisible) {
+            fadeIn(scrollToTop);
+            scrollToTopVisible = true;
+        } else if (scrollTop <= 100 && scrollToTopVisible) {
+            fadeOut(scrollToTop);
+            scrollToTopVisible = false;
         }
-    })();
-};
+    });
+
+    // Fade out element
+    function fadeOut(el) {
+        el.style.opacity = 1;
+        (function fade() {
+            if ((el.style.opacity -= 0.1) < 0) {
+                el.style.display = "none";
+            } else {
+                requestAnimationFrame(fade);
+            }
+        })();
+    }
+
+    // Fade in element
+    function fadeIn(el, display = "block") {
+        el.style.opacity = 0;
+        el.style.display = display;
+        (function fade() {
+            let opacity = parseFloat(el.style.opacity);
+            if ((opacity += 0.1) <= 1) {
+                el.style.opacity = opacity;
+                requestAnimationFrame(fade);
+            }
+        })();
+    }
+});
